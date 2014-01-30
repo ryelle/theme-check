@@ -1,10 +1,25 @@
 <?php
-function check_main( $theme ) {
+/**
+ * Collection of functions related to checking a theme.
+ *
+ * @package Theme Check
+ */
+
+/**
+ * Check a theme
+ *
+ * @global array  $themechecks List of tests to run
+ * @global array  $data        Associative array of theme data
+ * @global string $themename   Directory of theme to test
+ */
+function themecheck_main( $theme ) {
 	global $themechecks, $data, $themename;
+
 	$themename = $theme;
 	$theme = get_theme_root( $theme ) . "/$theme";
 	$files = listdir( $theme );
 	$data = tc_get_theme_data( $theme . '/style.css' );
+
 	if ( $data[ 'Template' ] ) {
 		// This is a child theme, so we need to pull files from the parent, which HAS to be installed.
 		$parent = get_theme_root( $data[ 'Template' ] ) . '/' . $data['Template'];
@@ -31,14 +46,14 @@ function check_main( $theme ) {
 		}
 
 		// run the checks
-		$success = run_themechecks($php, $css, $other);
+		$success = themecheck_run_checks($php, $css, $other);
 
 		global $checkcount;
 
 		// second loop, to display the errors
 		echo '<h2>' . __( 'Theme Info', 'theme-check' ) . ': </h2>';
 		echo '<div class="theme-info">';
-		if (file_exists( trailingslashit( WP_CONTENT_DIR . '/themes' ) . trailingslashit( basename( $theme ) ) . 'screenshot.png' ) ) {
+		if ( file_exists( trailingslashit( WP_CONTENT_DIR . '/themes' ) . trailingslashit( basename( $theme ) ) . 'screenshot.png' ) ) {
 			$image = getimagesize( $theme . '/screenshot.png' );
 			echo '<div style="float:right" class="theme-info"><img style="max-height:180px;" src="' . trailingslashit( WP_CONTENT_URL . '/themes' ) . trailingslashit( basename( $theme ) ) . 'screenshot.png" />';
 			echo '<br /><div style="text-align:center">' . $image[0] . 'x' . $image[1] . ' ' . round( filesize( $theme . '/screenshot.png' )/1024 ) . 'k</div></div>';
@@ -70,7 +85,7 @@ function check_main( $theme ) {
 		$plugins = get_plugins( '/theme-check' );
 		$version = explode( '.', $plugins['theme-check.php']['Version'] );
 		echo '<p>' . sprintf(__(' Running <strong>%1$s</strong> tests against <strong>%2$s</strong> using Guidelines Version: <strong>%3$s</strong> Plugin revision: <strong>%4$s</strong>', 'theme-check'), $checkcount, $data[ 'Title' ], $version[0], $version[1] ) . '</p>';
-		$results = display_themechecks();
+		$results = themecheck_display_checks();
 		if ( !$success ) {
 			echo '<h2>' . sprintf(__('One or more errors were found for %1$s.', 'theme-check'), $data[ 'Title' ] ) . '</h2>';
 		} else {
