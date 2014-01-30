@@ -9,6 +9,10 @@ Version: 20131213.1
 Text Domain: theme-check
 */
 
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include __DIR__ . '/theme-check.cli.php';
+}
+
 function themecheck_i18n() {
 	load_plugin_textdomain( 'theme-check', false, 'theme-check/lang' );
 }
@@ -52,7 +56,7 @@ function themecheck_do_page() {
 
 	if ( isset( $_POST[ 'themename' ] ) ) {
 		if ( isset( $_POST[ 'trac' ] ) ) define( 'TC_TRAC', true );
-		check_main( $_POST[ 'themename' ] );
+		themecheck_main( $_POST[ 'themename' ] );
 	}
 	echo '</div> <!-- .theme-check-->';
 	echo '</div>';
