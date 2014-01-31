@@ -86,7 +86,7 @@ function tc_grep( $error, $file ) {
 
 	foreach( $lines as $this_line )	{
 
-		if ( stristr ( $this_line, $error ) ) {
+		if ( $error && stristr ( $this_line, $error ) ) {
 			$error = str_replace( '"', "'", $error );
 			$this_line = str_replace( '"', "'", $this_line );
 			$error = ltrim( $error );
