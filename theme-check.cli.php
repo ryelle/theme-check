@@ -28,7 +28,7 @@ class ThemeCheckCLI extends WP_CLI_Command {
 	 * [--blog_id=<id>]
 	 * : (Multisite) Blog ID, if different than current
 	 *
-	 * @subcommand list-themes
+	 * @subcommand list
 	 */
 	public function list_themes( $args = array(), $assoc_args = array() ) {
 		$defaults = array( 'errors' => false, 'allowed' => null, 'blog_id' => 0 );
@@ -52,6 +52,8 @@ class ThemeCheckCLI extends WP_CLI_Command {
 	 * : The theme slug to check
 	 */
 	public function check( $args = array(), $assoc_args = array() ){
+		global $checkcount, $themechecks;
+
 		$theme = $this->fetcher->get_check( $args[0] );
 		$files = $theme->get_files();
 		$css = $php = $other = array();
@@ -68,10 +70,39 @@ class ThemeCheckCLI extends WP_CLI_Command {
 
 		$success = themecheck_run_checks($php, $css, $other);
 
-		var_dump($success);
+		$errors = array();
+		foreach ( $themechecks as $check ) {
+			if ( $check instanceof themecheck ) {
+				$error = $check->getError();
+				if ( ! empty( $error ) ) {
+					$errors = array_merge( $error, $errors );
+				}
+			}
+		}
+		$errors = array_unique( $errors );
+		$errors = array_map( 'strip_tags', $errors );
+		rsort( $errors );
+
+		foreach ( $errors as $error ) {
+			list( $type, $message ) = explode( ':', $error, 2 );
+			if ( 'REQUIRED' == trim( $type ) ) {
+				WP_CLI::line( WP_CLI::colorize( '%rRequired:%n '.trim( $message ) ) );
+			} elseif ( 'RECOMMENDED' == trim( $type ) ) {
+				WP_CLI::line( WP_CLI::colorize( '%cRecommended:%n '.trim( $message ) ) );
+			} elseif ( 'WARNING' == trim( $type ) ) {
+				WP_CLI::line( WP_CLI::colorize( '%yWarning:%n '.trim( $message ) ) );
+			} else {
+				WP_CLI::line( $error );
+			}
+		}
+
+		if ( empty( $errors ) ){
+			WP_CLI::success( "No errors!" );
+		}
+
 	}
 
 }
 
 // Here we define the command name we want to use.
-WP_CLI::add_command( 'theme-check', 'ThemeCheckCLI' );
+WP_CLI::add_command( 'trt', 'ThemeCheckCLI' );
