@@ -83,21 +83,30 @@ class ThemeCheckCLI extends WP_CLI_Command {
 		$errors = array_map( 'strip_tags', $errors );
 		rsort( $errors );
 
+		// We assume to pass unless we see a required or warning message.
+		$pass = true;
 		foreach ( $errors as $error ) {
+
 			list( $type, $message ) = explode( ':', $error, 2 );
+
 			if ( 'REQUIRED' == trim( $type ) ) {
 				WP_CLI::line( WP_CLI::colorize( '%rRequired:%n '.trim( $message ) ) );
-			} elseif ( 'RECOMMENDED' == trim( $type ) ) {
-				WP_CLI::line( WP_CLI::colorize( '%cRecommended:%n '.trim( $message ) ) );
+				$pass = false;
 			} elseif ( 'WARNING' == trim( $type ) ) {
 				WP_CLI::line( WP_CLI::colorize( '%yWarning:%n '.trim( $message ) ) );
+				$pass = false;
+			} elseif ( 'RECOMMENDED' == trim( $type ) ) {
+				WP_CLI::line( WP_CLI::colorize( '%cRecommended:%n '.trim( $message ) ) );
 			} else {
 				WP_CLI::line( $error );
 			}
+
 		}
 
 		if ( empty( $errors ) ){
-			WP_CLI::success( "No errors!" );
+			WP_CLI::success( "Theme passed review." );
+		} elseif ( true === $pass ){
+			WP_CLI::success( "Theme passed review with some recommended changes." );
 		}
 
 	}
