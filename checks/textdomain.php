@@ -25,7 +25,9 @@ class TextDomainCheck implements themecheck {
 					foreach ($matches[0] as $match ) {
 						$grep = tc_grep( ltrim( $match ), $php_key );
 						preg_match( '/[^\s]*\s[0-9]+/', $grep, $line);
-						$error .= ( !strpos( $error, $line[0] ) ) ? $grep : '';
+						if ( isset( $line[0] ) ) {
+							$error .= ( !strpos( $error, $line[0] ) ) ? $grep : '';
+						}
 					}
 				$this->error[] = sprintf( "<span class='tc-lead tc-recommended'>" . __( 'RECOMMENDED', 'theme-check' ) . '</span>: ' .
 					/* translators: 1: filename 2: error message 3: grep results */
