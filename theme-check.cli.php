@@ -110,7 +110,7 @@ class ThemeCheckCLI extends WP_CLI_Command {
 		} elseif ( true === $pass ){
 			WP_CLI::success( "Theme passed review with some recommended changes." );
 		} else {
-			WP_CLI::error( "Theme did not pass review." );
+			WP_CLI::line( WP_CLI::colorize( "%RFail:%n Theme did not pass review." ) );
 		}
 
 	}
