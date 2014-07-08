@@ -114,4 +114,4 @@ class ThemeCheckCLI extends WP_CLI_Command {
 }
 
 // Here we define the command name we want to use.
-WP_CLI::add_command( 'trt', 'ThemeCheckCLI' );
+WP_CLI::add_command( 'theme review', 'ThemeCheckCLI' );
