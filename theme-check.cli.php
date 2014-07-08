@@ -55,7 +55,7 @@ class ThemeCheckCLI extends WP_CLI_Command {
 		global $checkcount, $themechecks;
 
 		$theme = $this->fetcher->get_check( $args[0] );
-		$files = $theme->get_files();
+		$files = $theme->get_files( null, -1 );
 		$css = $php = $other = array();
 
 		foreach( $files as $key => $filename ) {
