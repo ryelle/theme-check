@@ -90,28 +90,49 @@ class ThemeCheckCLI extends WP_CLI_Command {
 			list( $type, $message ) = explode( ':', $error, 2 );
 
 			if ( 'REQUIRED' == trim( $type ) ) {
-				WP_CLI::line( WP_CLI::colorize( '%rRequired:%n '.trim( $message ) ) );
+				WP_CLI::warning( '%rRequired:%n '.trim( $message ) );
 				$pass = false;
 			} elseif ( 'WARNING' == trim( $type ) ) {
-				WP_CLI::line( WP_CLI::colorize( '%yWarning:%n '.trim( $message ) ) );
+				WP_CLI::warning( '%yWarning:%n '.trim( $message ) );
 				$pass = false;
 			} elseif ( 'RECOMMENDED' == trim( $type ) ) {
-				WP_CLI::line( WP_CLI::colorize( '%cRecommended:%n '.trim( $message ) ) );
+				WP_CLI::warning( '%cRecommended:%n '.trim( $message ) );
 			} else {
-				WP_CLI::line( $error );
+				WP_CLI::warning( $error );
 			}
 
 		}
+
+		WP_CLI::line();
 
 		if ( empty( $errors ) ){
 			WP_CLI::success( "Theme passed review." );
 		} elseif ( true === $pass ){
 			WP_CLI::success( "Theme passed review with some recommended changes." );
+		} else {
+			WP_CLI::error( "Theme did not pass review." );
 		}
 
 	}
 
 }
+
+class ThemeCheckCLILogger extends WP_CLI\Loggers\Regular {
+
+	private function _line( $message, $label, $color, $handle = STDOUT ) {
+		if ( ! empty( $label ) ) {
+			$label = \cli\Colors::colorize( "$color$label:%n ", $this->in_color );
+		}
+		$this->write( $handle, "{$label}{$message}\n" );
+	}
+
+	function warning( $message ) {
+		$this->_line( WP_CLI::colorize( $message ), '', '', STDERR );
+	}
+
+}
+
+WP_CLI::set_logger( new ThemeCheckCLILogger( true ) );
 
 // Here we define the command name we want to use.
 WP_CLI::add_command( 'theme review', 'ThemeCheckCLI' );
