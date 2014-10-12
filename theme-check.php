@@ -9,6 +9,10 @@ Version: 20140911.1
 Text Domain: theme-check
 */
 
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include __DIR__ . '/theme-check.cli.php';
+}
+
 class ThemeCheckMain {
 	function __construct() {
 		add_action( 'admin_init', array( $this, 'tc_i18n' ) );
