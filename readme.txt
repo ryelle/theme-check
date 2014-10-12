@@ -1,11 +1,11 @@
 === Theme Check ===
-Contributors: pross, Otto42
+Contributors: Otto42, pross
 Author URI: http://ottopress.com/
 Plugin URL: http://ottopress.com/wordpress-plugins/theme-check/
 Requires at Least: 3.0
 Tested Up To: 4.0
 Tags: template, theme, check, checker, tool, wordpress, wordpress.org, upload, uploader, test, guideline, review
-Stable tag: 20131213.1
+Stable tag: 20140929.1
 
 A simple and easy way to test your theme for all the latest WordPress standards and practices. A great theme development tool!
 
@@ -54,14 +54,14 @@ comments, or feedback:[[br]]
 If **either** of these two vars are defined a new trac tickbox will appear next to the *Check it!* button.
 
 == Changelog ==
-= 20140911.1 =
+= 20140929.1 =
 * Added new checks and updates from Frank Klein at Automattic. Thanks Frank!
 * Updated deprecated function listings
 * Customizer check: All add_settings must use sanitization callbacks, for security
 * Plugin territory checks: Themes must not register post types or taxonomies or add shortcodes for post content
 * Widgets: Calls to register_sidebar must be called from the widgets_init action hook
 * Title: <title> tags must exist and not have anything in them other than a call to wp_title()
-* CDN: Checks for use of common CDNs
+* CDN: Checks for use of common CDNs (recommended only)
 * Note: Changed plugin and author URIs due to old URIs being invalid. These may change again in the future, the URIs to my own site are temporarily only.
 
 = 20131213.1 =
