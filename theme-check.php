@@ -9,6 +9,10 @@ Version: 20140929.1
 Text Domain: theme-check
 */
 
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include __DIR__ . '/theme-check.cli.php';
+}
+
 class ThemeCheckMain {
 	function __construct() {
 		add_action( 'admin_init', array( $this, 'tc_i18n' ) );
@@ -35,7 +39,7 @@ class ThemeCheckMain {
 
 	function themecheck_do_page() {
 		if ( !current_user_can( 'manage_options' ) )  {
-		wp_die( __( 'You do not have sufficient permissions to access this page.', 'theme-check' ) );
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'theme-check' ) );
 		}
 
 		add_filter( 'extra_theme_headers', array( $this, 'tc_add_headers' ) );
